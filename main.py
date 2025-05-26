@@ -43,3 +43,16 @@ async def person_info(person: Person):
     return {
         "message": f"{person.name} is {person.age} years old and is an {status}."
     }
+
+# 7. Path route with string: /city/Boston
+@app.get("/city/{city_name}")
+async def city_info(city_name: str):
+    facts = {
+        "boston": "Boston is a city that experiences all four seasons.",
+        "newyork": "New York is a very busy place with lots of tall buildings.",
+        "seattle": "Seattle gets a fair amount of rain each year.",
+        "miami": "Miami is known for being warm and having many beaches.",
+        "dallas": "Dallas is located in Texas and is pretty big."
+    }
+    info = facts.get(city_name.lower(), "No info for this city.")
+    return {"city": city_name, "info": info}
