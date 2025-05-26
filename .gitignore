@@ -1,0 +1,79 @@
+# Compiled source #
+###################
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Packages #
+############
+*.jar
+*.war
+*.ear
+
+# Logs and databases #
+#######################
+*.log
+*.sql
+*.sqlite
+
+# OS generated files #
+######################
+.DS_Store
+Thumbs.db
+
+# IDEs and editors #
+####################
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+
+# Node.js #
+###########
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Python #
+##########
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+
+# Java #
+########
+*.class
+*.jar
+*.war
+*.ear
+
+# C/C++ #
+#########
+*.obj
+*.elf
+*.out
+
+# Rust #
+########
+target/
+
+# Go #
+######
+*.exe
+*.test
+*.out
+
+# Other #
+#########
+*.tmp
+*.temp
+*.old
+*.orig
+*.rej
