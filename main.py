@@ -23,3 +23,11 @@ async def cube(number: int):
 @app.get("/add")
 async def add(a: int, b: int):
     return {"sum": a + b}
+
+# 5. Path param calculation: /factorial/5
+@app.get("/factorial/{n}")
+async def factorial(n: int):
+    result = 1
+    for i in range(2, n+1):
+        result *= i
+    return {"n": n, "factorial": result}
