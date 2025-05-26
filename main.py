@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Query, Path
 from pydantic import BaseModel
-from typing import Optional
+
 
 app = FastAPI()
 
