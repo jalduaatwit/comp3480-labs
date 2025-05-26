@@ -18,3 +18,8 @@ async def greet(name: str = "Guest"):
 @app.get("/cube/{number}")
 async def cube(number: int):
     return {"number": number, "cube": number ** 3}
+
+# 4. Query string math: /add?a=5&b=7
+@app.get("/add")
+async def add(a: int, b: int):
+    return {"sum": a + b}
