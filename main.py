@@ -13,3 +13,8 @@ async def root():
 @app.get("/greet")
 async def greet(name: str = "Guest"):
     return {"greeting": f"Hello, {name}!"}
+
+# 3. Path param: /cube/3
+@app.get("/cube/{number}")
+async def cube(number: int):
+    return {"number": number, "cube": number ** 3}
