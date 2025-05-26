@@ -31,3 +31,15 @@ async def factorial(n: int):
     for i in range(2, n+1):
         result *= i
     return {"n": n, "factorial": result}
+
+# 6. POST with Pydantic: /person
+class Person(BaseModel):
+    name: str
+    age: int
+
+@app.post("/person")
+async def person_info(person: Person):
+    status = "minor" if person.age < 18 else "adult"
+    return {
+        "message": f"{person.name} is {person.age} years old and is an {status}."
+    }
