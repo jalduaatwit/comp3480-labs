@@ -65,3 +65,8 @@ class Rectangle(BaseModel):
 @app.post("/area/rectangle")
 async def rectangle_area(rect: Rectangle):
     return {"width": rect.width, "height": rect.height, "area": rect.width * rect.height}
+
+# 9. Path and Query: /power/2?exp=8
+@app.get("/power/{base}")
+async def power(base: int, exp: int = 2):
+    return {"base": base, "exp": exp, "result": base ** exp}
