@@ -8,3 +8,8 @@ app = FastAPI()
 @app.get("/")
 async def root():
     return {"message": "Welcome to Lab 1 FastAPI Service!"}
+
+# 2. Query string: /greet?name=Aniket
+@app.get("/greet")
+async def greet(name: str = "Guest"):
+    return {"greeting": f"Hello, {name}!"}
