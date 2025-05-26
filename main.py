@@ -56,3 +56,12 @@ async def city_info(city_name: str):
     }
     info = facts.get(city_name.lower(), "No info for this city.")
     return {"city": city_name, "info": info}
+
+# 8. POST: Calculate area
+class Rectangle(BaseModel):
+    width: float
+    height: float
+
+@app.post("/area/rectangle")
+async def rectangle_area(rect: Rectangle):
+    return {"width": rect.width, "height": rect.height, "area": rect.width * rect.height}
