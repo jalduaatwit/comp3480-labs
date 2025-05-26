@@ -70,3 +70,8 @@ async def rectangle_area(rect: Rectangle):
 @app.get("/power/{base}")
 async def power(base: int, exp: int = 2):
     return {"base": base, "exp": exp, "result": base ** exp}
+
+# 12. GET list: /colors
+@app.get("/colors")
+async def list_colors():
+    return {"colors": ["red", "blue", "green", "yellow"]}
