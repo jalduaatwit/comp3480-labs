@@ -165,6 +165,64 @@ class FastAPILab1Test(unittest.TestCase):
         self.assertIn("colors", response.json())
         self.assertIn("red", response.json()["colors"])
         print(f"{prefix} " + "-" * 40)
+        
+    def test_11_protected_data_no_key(self):
+        prefix = "[11a]"
+        print(f"\n{prefix} Testing GET /protected-data with NO API key header")
+        url = f"{self.base_url}/protected-data"
+        response = requests.get(url)
+        print(f"{prefix} Status Code: {response.status_code}")
+        if response.status_code == 401:
+            print(f"{prefix} Unauthorized: {response.json()}")
+        self.assertEqual(response.status_code, 401)
+        print(f"{prefix} " + "-" * 40)
+
+    def test_11b_protected_data_wrong_key(self):
+        prefix = "[11b]"
+        print(f"\n{prefix} Testing GET /protected-data with WRONG API key")
+        url = f"{self.base_url}/protected-data"
+        headers = {"api-key": "wrongkey"}
+        response = requests.get(url, headers=headers)
+        print(f"{prefix} Status Code: {response.status_code}")
+        if response.status_code == 401:
+            print(f"{prefix} Unauthorized: {response.json()}")
+        self.assertEqual(response.status_code, 401)
+        print(f"{prefix} " + "-" * 40)
+
+    def test_11c_protected_data_right_key(self):
+        prefix = "[11c]"
+        print(f"\n{prefix} Testing GET /protected-data with CORRECT API key")
+        url = f"{self.base_url}/protected-data"
+        headers = {"api-key": "mysecretkey"}
+        response = requests.get(url, headers=headers)
+        print(f"{prefix} Status Code: {response.status_code}")
+        print(f"{prefix} Response Body: {response.json()}")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("data", response.json())
+        print(f"{prefix} " + "-" * 40)
+
+    def test_12_cookie_greet_no_cookie(self):
+        prefix = "[12]"
+        print(f"\n{prefix} Testing GET /cookie-greet with NO username cookie")
+        url = f"{self.base_url}/cookie-greet"
+        response = requests.get(url)
+        print(f"{prefix} Status Code: {response.status_code}")
+        print(f"{prefix} Response Body: {response.json()}")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("new visitor", response.json()["greeting"])
+        print(f"{prefix} " + "-" * 40)
+
+    def test_12b_cookie_greet_with_cookie(self):
+        prefix = "[12b]"
+        print(f"\n{prefix} Testing GET /cookie-greet with username cookie")
+        url = f"{self.base_url}/cookie-greet"
+        cookies = {"username": "Aniket"}
+        response = requests.get(url, cookies=cookies)
+        print(f"{prefix} Status Code: {response.status_code}")
+        print(f"{prefix} Response Body: {response.json()}")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Aniket", response.json()["greeting"])
+        print(f"{prefix} " + "-" * 40)
 
 if __name__ == '__main__':
     unittest.main()
