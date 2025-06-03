@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Header, HTTPException, Response, Cookie
+from fastapi import FastAPI, Header, HTTPException, Cookie
 from pydantic import BaseModel
 from typing import Optional
 
