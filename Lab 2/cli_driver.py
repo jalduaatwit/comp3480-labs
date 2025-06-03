@@ -37,15 +37,16 @@ class FastAPIDriver:
             return False
     
     def make_request(self, method: str, endpoint: str, params: Optional[Dict] = None, 
-                    json_data: Optional[Dict] = None) -> Optional[Dict[Any, Any]]:
+                    json_data: Optional[Dict] = None, headers: Optional[Dict] = None,
+                    cookies: Optional[Dict] = None) -> Optional[Dict[Any, Any]]:
         """Make HTTP request and handle response."""
         try:
             url = f"{self.base_url}{endpoint}"
             
             if method.upper() == 'GET':
-                response = requests.get(url, params=params)
+                response = requests.get(url, params=params, headers=headers, cookies=cookies)
             elif method.upper() == 'POST':
-                response = requests.post(url, json=json_data, params=params)
+                response = requests.post(url, json=json_data, params=params, headers=headers, cookies=cookies)
             else:
                 print(f"ERROR: Unsupported HTTP method: {method}")
                 return None
@@ -55,6 +56,10 @@ class FastAPIDriver:
                 print(f"Query Parameters: {params}")
             if json_data:
                 print(f"Request Body: {json.dumps(json_data, indent=2)}")
+            if headers:
+                print(f"Headers: {headers}")
+            if cookies:
+                print(f"Cookies: {cookies}")
             
             print(f"Status Code: {response.status_code}")
             
@@ -253,6 +258,51 @@ class FastAPIDriver:
         print("="*60)
         self.make_request('GET', '/colors')
     
+    def test_protected_data(self):
+        """Test the protected data endpoint with header authentication."""
+        clear_terminal()
+        print("="*60)
+        print("Testing Protected Data (Header Authentication)")
+        print("="*60)
+        
+        print("This endpoint requires an API key in the header.")
+        print("Valid API key: mysecretkey")
+        
+        # Test without API key first
+        print("\nTesting without API key:")
+        self.make_request('GET', '/protected-data')
+        
+        # Test with API key
+        print("\nTesting with API key:")
+        api_key = input("Enter API key (or press Enter for 'mysecretkey'): ").strip()
+        if not api_key:
+            api_key = "mysecretkey"
+        
+        headers = {"api-key": api_key}
+        self.make_request('GET', '/protected-data', headers=headers)
+    
+    def test_cookie_greet(self):
+        """Test the cookie-based personal greeting endpoint."""
+        clear_terminal()
+        print("="*60)
+        print("Testing Cookie-Based Personal Greeting")
+        print("="*60)
+        
+        print("This endpoint uses cookies to personalize greetings.")
+        
+        # Test without cookie first
+        print("\nTesting without cookie:")
+        self.make_request('GET', '/cookie-greet')
+        
+        # Test with cookie
+        print("\nTesting with username cookie:")
+        username = input("Enter username for cookie (or press Enter for 'JohnDoe'): ").strip()
+        if not username:
+            username = "JohnDoe"
+        
+        cookies = {"username": username}
+        self.make_request('GET', '/cookie-greet', cookies=cookies)
+    
     def run_all_tests(self):
         """Run all available tests sequentially."""
         clear_terminal()
@@ -318,6 +368,26 @@ class FastAPIDriver:
         self.make_request('GET', '/colors')
         
         print("\n" + "="*60)
+        print("Testing Protected Data (Auto)")
+        print("="*60)
+        # Test without API key
+        self.make_request('GET', '/protected-data')
+        
+        # Test with valid API key
+        headers = {"api-key": "mysecretkey"}
+        self.make_request('GET', '/protected-data', headers=headers)
+        
+        print("\n" + "="*60)
+        print("Testing Cookie-Based Personal Greeting (Auto)")
+        print("="*60)
+        # Test without cookie
+        self.make_request('GET', '/cookie-greet')
+        
+        # Test with cookie
+        cookies = {"username": "JohnDoe"}
+        self.make_request('GET', '/cookie-greet', cookies=cookies)
+        
+        print("\n" + "="*60)
         print("ALL TESTS COMPLETED!")
         print("="*60)
 
@@ -345,9 +415,11 @@ def print_menu():
     print("8.  Rectangle Area Calculator    (/area/rectangle)")
     print("9.  Power Calculator             (/power/{base})")
     print("10. Colors List                  (/colors)")
+    print("11. Protected Data               (/protected-data)")
+    print("12. Cookie Personal Greeting     (/cookie-greet)")
     print("="*60)
-    print("11. Run All Tests (Auto)")
-    print("12. Check Server Status")
+    print("13. Run All Tests (Auto)")
+    print("14. Check Server Status")
     print("0.  Exit")
     print("="*60)
 
@@ -388,7 +460,7 @@ def main():
         print_menu()
         
         try:
-            choice = input("\nSelect an option (0-12): ").strip()
+            choice = input("\nSelect an option (0-14): ").strip()
             
             if choice == '0':
                 clear_terminal()
@@ -418,8 +490,12 @@ def main():
             elif choice == '10':
                 driver.test_colors()
             elif choice == '11':
-                driver.run_all_tests()
+                driver.test_protected_data()
             elif choice == '12':
+                driver.test_cookie_greet()
+            elif choice == '13':
+                driver.run_all_tests()
+            elif choice == '14':
                 clear_terminal()
                 print("="*60)
                 print("Server Status Check")
@@ -432,7 +508,7 @@ def main():
             else:
                 clear_terminal()
                 print("="*60)
-                print("ERROR: Invalid choice. Please select 0-12.")
+                print("ERROR: Invalid choice. Please select 0-14.")
                 print("="*60)
             
             input("\nPress Enter to continue...")
