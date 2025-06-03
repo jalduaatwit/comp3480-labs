@@ -1,8 +1,10 @@
-from fastapi import FastAPI, Query, Path
+from fastapi import FastAPI, Header, HTTPException, Response, Cookie
 from pydantic import BaseModel
-
+from typing import Optional
 
 app = FastAPI()
+
+API_KEY = "mysecretkey"
 
 # 1. Root route
 @app.get("/")
@@ -76,3 +78,17 @@ async def power(base: int, exp: int = 2):
 async def list_colors():
     return {"colors": ["red", "blue", "green", "yellow"]}
 
+# 11. Header: /protected-data
+@app.get("/protected-data")
+async def protected_data(api_key: Optional[str] = Header(None)):
+    if api_key != API_KEY:
+        raise HTTPException(status_code=401, detail="Invalid or missing API key.")
+    return {"data": "This is protected data."}
+
+# 12. Cookie: /cookie-greet
+@app.get("/cookie-greet")
+async def personal_greet(username: Optional[str] = Cookie(None)):
+    if username:
+        return {"greeting": f"Welcome back, {username}!"}
+    else:
+        return {"greeting": "Hello, new visitor!"}
