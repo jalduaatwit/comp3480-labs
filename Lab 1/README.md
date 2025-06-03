@@ -28,13 +28,14 @@ This project is a beginner friendly FastAPI service created as a programming lab
 pip install fastapi uvicorn
 ```
 
-2. (For Testing) Install requests:
+2. **Install requests for testing:**
 ```bash
 pip install requests
 ```
 
 ### Running the API Server
 ```bash
+cd "Lab 1"
 uvicorn main:app --port 8080 --reload
 ```
 
@@ -43,7 +44,7 @@ Interactive documentation is automatically available at:
 - http://localhost:8080/docs (Swagger UI)
 - http://localhost:8080/redoc (ReDoc)
 
-## Example Endpoints
+## API Endpoints
 
 | Method | Endpoint            | Description                | Example Input                   |
 | ------ | ------------------- | -------------------------- | ------------------------------- |
@@ -62,6 +63,7 @@ Interactive documentation is automatically available at:
 1. Ensure the server is running
 2. Run the test file:
 ```bash
+cd "Lab 1"
 python test.py
 ```
 Test Output:
@@ -69,8 +71,8 @@ Test Output:
 
 ## Technologies Used
 
-- FastAPI – API framework
-- Uvicorn – ASGI server for local development
-- Pydantic – Data validation and parsing
-- unittest – Automated testing
-- requests – HTTP client for test scripts
+- **FastAPI** – API framework
+- **Uvicorn** – ASGI server for local development
+- **Pydantic** – Data validation and parsing
+- **unittest** – Automated testing
+- **requests** – HTTP client for test scripts
