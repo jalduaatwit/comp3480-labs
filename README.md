@@ -1,6 +1,6 @@
 # COMP3480 Labs
 
-This repository contains programming lab assignments for COMP3480, focusing on building web services with increasing complexity and features, progressing from FastAPI (Python) to Express.js (Node.js).
+This repository contains programming lab assignments for COMP3480, focusing on building web services with increasing complexity and features, progressing from FastAPI (Python) to Express.js (Node.js) and containerization with Docker.
 
 ## Labs
 
@@ -12,6 +12,9 @@ Advanced FastAPI service with 12 endpoints, including header authentication, coo
 
 ### [Lab 3 - Express.js Service](Lab%203/README.md)
 Express.js web service with 11 endpoints, demonstrating the transition from Python/FastAPI to JavaScript/Node.js with mixed HTML and JSON responses.
+
+### [Lab 4 - Docker Containerization](Lab%204/README.md)
+Docker containerization of the FastAPI service, focusing on container building and deployment.
 
 ## Getting Started
 
@@ -25,4 +28,7 @@ Each lab folder contains its own README with detailed instructions on how to run
 
 ### For Lab 3 (Express.js/Node.js):
 - Node.js 14+
-- npm package manager 
+- npm package manager
+
+### For Lab 4 (Docker):
+- Docker installed

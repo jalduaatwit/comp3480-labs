@@ -9,7 +9,7 @@ API_KEY = "mysecretkey"
 # 1. Root route
 @app.get("/")
 async def root():
-    return {"message": "Welcome to Lab 2 FastAPI Service!"}
+    return {"message": "Welcome to Lab 4 FastAPI Service!"}
 
 # 2. Query string: /greet?name=Aniket
 @app.get("/greet")
