@@ -4,12 +4,8 @@ This project demonstrates containerized SQL database operations using Docker Com
 
 ## Learning Goals
 
-- Learn Docker Compose for multi-container application orchestration
 - Practice containerized database deployment and management
-- Understand persistent data storage with Docker volumes
 - Execute SQL queries in a containerized MySQL environment
-- Master database operations with proper container networking
-- Develop proficiency with DBeaver connecting to containerized databases
 
 ## Features
 
@@ -225,12 +221,10 @@ docker-compose logs mysql
 ## Troubleshooting
 
 ### Common Issues:
-- **"Connection refused"**: Ensure Docker Compose is running with `docker-compose ps`
 - **"Database not found"**: Make sure you executed the `createguitar.sql` script first
 - **"Table doesn't exist"**: Verify the database was created successfully
 - **"Wrong port"**: Use port 3307 (not 3306) for the host connection
 - **"Wrong database selected"**: Use Ctrl+0 to select the `my_guitar_shop` database
-- **"Container won't start"**: Check if port 3307 is already in use on your system
 
 ### Container-Specific Issues:
 - **"Port already in use"**: Change the port mapping in docker-compose.yaml
