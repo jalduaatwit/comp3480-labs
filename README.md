@@ -1,6 +1,6 @@
 # COMP3480 Labs
 
-This repository contains programming lab assignments for COMP3480, focusing on building web services with increasing complexity and features, progressing from FastAPI (Python) to Express.js (Node.js) and containerization with Docker.
+This repository contains programming lab assignments for COMP3480, focusing on building web services with increasing complexity and features, progressing from FastAPI (Python) to Express.js (Node.js), containerization with Docker, and SQL database operations.
 
 ## Labs
 
@@ -15,6 +15,9 @@ Express.js web service with 11 endpoints, demonstrating the transition from Pyth
 
 ### [Lab 4 - Docker Containerization](Lab%204/README.md)
 Docker containerization of the FastAPI service, focusing on container building and deployment.
+
+### [Lab 5 - SQL Database Queries](Lab%205/README.md)
+SQL database operations with 13 queries covering simple queries, inner joins, and aggregation functions using a guitar shop database.
 
 ## Getting Started
 
@@ -32,3 +35,7 @@ Each lab folder contains its own README with detailed instructions on how to run
 
 ### For Lab 4 (Docker):
 - Docker installed
+
+### For Lab 5 (SQL/Database):
+- MySQL Server
+- DBeaver Community Edition
