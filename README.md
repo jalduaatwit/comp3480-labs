@@ -19,6 +19,9 @@ Docker containerization of the FastAPI service, focusing on container building a
 ### [Lab 5 - SQL Database Queries](Lab%205/README.md)
 SQL database operations with 13 queries covering simple queries, inner joins, and aggregation functions using a guitar shop database.
 
+### [Lab 6 - Containerized MySQL Database](Lab%206/README.md)
+Containerized MySQL database using Docker Compose with 13 SQL queries, demonstrating database deployment and management in a containerized environment.
+
 ## Getting Started
 
 Each lab folder contains its own README with detailed instructions on how to run and test the code.
@@ -38,4 +41,8 @@ Each lab folder contains its own README with detailed instructions on how to run
 
 ### For Lab 5 (SQL/Database):
 - MySQL Server
+- DBeaver Community Edition
+
+### For Lab 6 (Containerized SQL/Database):
+- Docker and Docker Compose
 - DBeaver Community Edition

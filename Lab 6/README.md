@@ -1,38 +1,58 @@
-# COMP3480 Lab 5 - SQL Database Queries
+# COMP3480 Lab 6 - Containerized MySQL Database
 
-This project focuses on creating and executing various SQL queries using a guitar shop database. The main goal is to learn SQL query development with different types of joins, aggregations, and database operations using DBeaver as the database management tool.
+This project demonstrates containerized SQL database operations using Docker Compose and MySQL. The main goal is to learn how to deploy and manage a MySQL database in a containerized environment while executing various SQL queries using DBeaver as the database management tool.
 
 ## Learning Goals
 
-- Learn to create and execute SQL queries in a database management tool
-- Practice simple single-table queries for basic data retrieval
-- Understand and implement inner joins to combine data from multiple tables
-- Master aggregation functions and GROUP BY clauses for data analysis
-- Develop proficiency with DBeaver database management interface
-- Analyze real-world data relationships in a business context
+- Learn Docker Compose for multi-container application orchestration
+- Practice containerized database deployment and management
+- Understand persistent data storage with Docker volumes
+- Execute SQL queries in a containerized MySQL environment
+- Master database operations with proper container networking
+- Develop proficiency with DBeaver connecting to containerized databases
 
 ## Features
 
+- **Containerized MySQL Database**: Complete MySQL deployment using Docker Compose
+- **Persistent Data Storage**: Docker volumes for data persistence across container restarts
 - **13 SQL Queries**: Comprehensive query set covering different SQL concepts
 - **Simple Queries**: 3 basic single-table queries for data retrieval
 - **Inner Join Queries**: 5 queries demonstrating table relationships
 - **Aggregation Queries**: 5 queries using GROUP BY and functions
-- **DBeaver Integration**: Complete setup and execution instructions
+- **DBeaver Integration**: Complete setup and execution instructions for containerized database
 
 ## How To Use
 
 ### Prerequisites
+- Docker and Docker Compose installed on your system
 - DBeaver Community Edition (free database tool)
-- MySQL Server installed and running
-- Basic knowledge of SQL syntax
+- Basic knowledge of SQL syntax and Docker concepts
 
-### Database Setup
+### Database Setup with Docker Compose
 
-1. **Open DBeaver** and connect to your MySQL server
-2. **Open the `createguitar.sql` file** in DBeaver:
+1. **Start the MySQL container:**
+```bash
+cd "Lab 6"
+docker-compose up
+```
+
+### Connecting DBeaver to Containerized MySQL
+
+1. **Open DBeaver** and create a new MySQL connection
+2. **Configure connection settings:**
+   - **Host**: `localhost`
+   - **Port**: `3307` (mapped from container's 3306)
+   - **Database**: Leave empty initially
+   - **Username**: `root`
+   - **Password**: `secret_password`
+3. **Test the connection** to ensure it works
+
+### Database Initialization
+
+1. **Open the `createguitar.sql` file** in DBeaver:
    - Go to File → Open File
-   - Navigate to the Lab 5 folder and select `createguitar.sql`
-3. **Execute the script**:
+   - Navigate to the Lab 6 folder and select `createguitar.sql`
+2. **Execute the script**:
    - Click the "Execute SQL Script" button (▶️) or press Ctrl+Alt+X
    - This will create the database, tables, and insert sample data
 
@@ -43,13 +63,13 @@ This project focuses on creating and executing various SQL queries using a guita
    - Click the "SQL Editor" button or press Ctrl+]
 2. **Select your datasource**:
    - Press **Ctrl+9** to open the datasource selection dialog
-   - Choose your MySQL connection
+   - Choose your MySQL connection (localhost:3307)
 3. **Select the database**:
    - Press **Ctrl+0** to open the database selection dialog
    - Choose `my_guitar_shop` database
 4. **Open a query file**:
    - Go to File → Open File
-   - Select any `.sql` file from the Lab 5 folder
+   - Select any `.sql` file from the Lab 6 folder
 5. **Execute the query**:
    - Click the "Execute SQL Statement" button (▶️) or press Ctrl+Enter
 6. **View results** in the data tab below the editor
@@ -70,6 +90,35 @@ This project focuses on creating and executing various SQL queries using a guita
 3. **Copy the contents** of any query file
 4. **Paste into the editor**
 5. **Execute the query**
+
+## Docker Configuration
+
+### Docker Compose Structure
+```yaml
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:9.3
+    container_name: mysql-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: secret_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
+```
+
+### Key Configuration Details
+- **MySQL Version**: 9.3 (latest stable)
+- **Port Mapping**: Host port 3307 → Container port 3306
+- **Root Password**: `secret_password`
+- **Data Persistence**: `mysql_data` volume for database files
+- **Restart Policy**: `unless-stopped` for automatic recovery
 
 ## Database Schema
 
@@ -144,17 +193,60 @@ GROUP BY state;
 ```
 **Result**: Customer count grouped by state
 
+## Container Management
+
+### Useful Docker Commands
+
+**Start the database (in the background):**
+```bash
+docker-compose up -d
+```
+
+**Stop the database (stops the container):**
+```bash
+docker-compose down
+```
+
+**View container status:**
+```bash
+docker-compose ps
+```
+
+**View container logs:**
+```bash
+docker-compose logs mysql
+```
+
+### Data Persistence
+- Database data is stored in the `mysql_data` Docker volume
+- Data persists across container restarts and system reboots
+- To completely reset the database, use `docker-compose down -v`
+
 ## Troubleshooting
 
 ### Common Issues:
+- **"Connection refused"**: Ensure Docker Compose is running with `docker-compose ps`
 - **"Database not found"**: Make sure you executed the `createguitar.sql` script first
 - **"Table doesn't exist"**: Verify the database was created successfully
-- **"Connection failed"**: Check your MySQL server is running and credentials are correct
+- **"Wrong port"**: Use port 3307 (not 3306) for the host connection
 - **"Wrong database selected"**: Use Ctrl+0 to select the `my_guitar_shop` database
-- **"Wrong datasource"**: Use Ctrl+9 to select your MySQL connection
+- **"Container won't start"**: Check if port 3307 is already in use on your system
+
+### Container-Specific Issues:
+- **"Port already in use"**: Change the port mapping in docker-compose.yaml
+
+## Key Differences from Lab 5
+
+- **Deployment**: Containerized MySQL vs local MySQL installation
+- **Port**: 3307 (mapped) vs 3306 (direct)
+- **Management**: Docker Compose vs system service management
+- **Isolation**: Containerized environment vs system-wide installation
+- **Persistence**: Docker volumes vs system file storage
 
 ## Technologies Used
 
-- **MySQL** – Relational database management system
+- **Docker** – Container platform for application isolation
+- **Docker Compose** – Multi-container application orchestration
+- **MySQL 9.3** – Relational database management system
 - **DBeaver** – Universal database management tool
 - **SQL** – Structured Query Language
