@@ -1,9 +1,10 @@
 """
-Python Command Line Driver Program for Lab 2 FastAPI Services
-============================================================
+Python Command Line Driver Program for Lab 7 FastAPI Services and Database
+==========================================================================
 
 This program provides an interactive command-line interface to access
-all route services available in the Lab 2 FastAPI application.
+all route services available in the Lab 2 FastAPI application and
+execute database queries.
 
 Usage: python cli_driver.py
 """
@@ -13,6 +14,10 @@ import json
 import sys
 import os
 from typing import Optional, Dict, Any
+from database_utils import (
+    connect_to_db, close_connection,
+    get_query_by_key, list_all_queries
+)
 
 
 def clear_terminal():
@@ -26,6 +31,7 @@ class FastAPIDriver:
     def __init__(self, base_url: str = "http://localhost:8080"):
         """Initialize the driver with base URL."""
         self.base_url = base_url.rstrip('/')
+        self.db_connection = None
         
     def check_server_status(self) -> bool:
         """Check if the FastAPI server is running."""
@@ -73,6 +79,89 @@ class FastAPIDriver:
         except requests.exceptions.RequestException as e:
             print(f"ERROR: Request failed: {e}")
             return None
+
+    # Database methods
+    def execute_predefined_query(self, query_key: str):
+        """Execute a predefined query by key."""
+        clear_terminal()
+        print("="*60)
+        print("Executing Predefined Query")
+        print("="*60)
+        
+        query_info = get_query_by_key(query_key)
+        if not query_info:
+            print(f"ERROR: Query key '{query_key}' not found.")
+            return
+        
+        print(f"Query: {query_info['name']}")
+        print(f"SQL: {query_info['query']}")
+        print("-" * 60)
+        
+        # Connect to database if not already connected
+        if not self.db_connection:
+            self.db_connection = connect_to_db()
+            if not self.db_connection:
+                print("Failed to connect to database. Please ensure MySQL container is running.")
+                return
+        
+        from database_utils import execute_query_with_table_format, execute_query_with_headers
+        result = execute_query_with_table_format(self.db_connection, query_info['query'])
+        
+        if result:
+            print(result)
+            # Get actual row count from the data
+            data_result = execute_query_with_headers(self.db_connection, query_info['query'])
+            if data_result and data_result['data']:
+                print(f"\nTotal rows: {len(data_result['data'])}")
+            else:
+                print("\nTotal rows: 0")
+        else:
+            print("Failed to execute query.")
+    
+    def execute_custom_query(self):
+        """Execute a custom SQL query."""
+        clear_terminal()
+        print("="*60)
+        print("Execute Custom SQL Query")
+        print("="*60)
+        
+        # Connect to database if not already connected
+        if not self.db_connection:
+            self.db_connection = connect_to_db()
+            if not self.db_connection:
+                print("Failed to connect to database. Please ensure MySQL container is running.")
+                return
+        
+        print("Enter your SQL query (type 'exit' to cancel):")
+        print("Example: SELECT * FROM products LIMIT 5;")
+        print("-" * 60)
+        
+        sql_query = input("SQL Query: ").strip()
+        
+        if sql_query.lower() == 'exit':
+            print("Query cancelled.")
+            return
+        
+        if not sql_query:
+            print("No query entered.")
+            return
+        
+        print(f"\nExecuting: {sql_query}")
+        print("-" * 60)
+        
+        from database_utils import execute_query_with_table_format, execute_query_with_headers
+        result = execute_query_with_table_format(self.db_connection, sql_query)
+        
+        if result:
+            print(result)
+            # Get actual row count from the data
+            data_result = execute_query_with_headers(self.db_connection, sql_query)
+            if data_result and data_result['data']:
+                print(f"\nTotal rows: {len(data_result['data'])}")
+            else:
+                print("\nTotal rows: 0")
+        else:
+            print("Failed to execute query.")
     
     def test_root(self):
         """Test the root endpoint."""
@@ -301,101 +390,13 @@ class FastAPIDriver:
         
         cookies = {"username": username}
         self.make_request('GET', '/cookie-greet', cookies=cookies)
-    
-    def run_all_tests(self):
-        """Run all available tests sequentially."""
-        clear_terminal()
-        print("="*60)
-        print("RUNNING ALL TESTS AUTOMATICALLY")
-        print("="*60)
-        print("This will run all tests with default values...")
-        input("Press Enter to continue...")
-        
-        # Run all tests with default values
-        print("\n" + "="*60)
-        print("Testing Root Endpoint (Auto)")
-        print("="*60)
-        self.make_request('GET', '/')
-        
-        print("\n" + "="*60)
-        print("Testing Greet Endpoint (Auto)")
-        print("="*60)
-        self.make_request('GET', '/greet')
-        self.make_request('GET', '/greet', params={'name': 'Aniket'})
-        
-        print("\n" + "="*60)
-        print("Testing Cube Calculation (Auto)")
-        print("="*60)
-        self.make_request('GET', '/cube/3')
-        
-        print("\n" + "="*60)
-        print("Testing Addition (Auto)")
-        print("="*60)
-        self.make_request('GET', '/add', params={'a': 5, 'b': 7})
-        
-        print("\n" + "="*60)
-        print("Testing Factorial Calculation (Auto)")
-        print("="*60)
-        self.make_request('GET', '/factorial/5')
-        
-        print("\n" + "="*60)
-        print("Testing Person Info (Auto)")
-        print("="*60)
-        self.make_request('POST', '/person', json_data={"name": "Alex", "age": 17})
-        self.make_request('POST', '/person', json_data={"name": "Jordan", "age": 30})
-        
-        print("\n" + "="*60)
-        print("Testing City Information (Auto)")
-        print("="*60)
-        self.make_request('GET', '/city/Boston')
-        self.make_request('GET', '/city/Springfield')
-        
-        print("\n" + "="*60)
-        print("Testing Rectangle Area Calculation (Auto)")
-        print("="*60)
-        self.make_request('POST', '/area/rectangle', json_data={"width": 4.0, "height": 5.0})
-        
-        print("\n" + "="*60)
-        print("Testing Power Calculation (Auto)")
-        print("="*60)
-        self.make_request('GET', '/power/2')
-        self.make_request('GET', '/power/2', params={'exp': 8})
-        
-        print("\n" + "="*60)
-        print("Testing Colors List (Auto)")
-        print("="*60)
-        self.make_request('GET', '/colors')
-        
-        print("\n" + "="*60)
-        print("Testing Protected Data (Auto)")
-        print("="*60)
-        # Test without API key
-        self.make_request('GET', '/protected-data')
-        
-        # Test with valid API key
-        headers = {"api-key": "mysecretkey"}
-        self.make_request('GET', '/protected-data', headers=headers)
-        
-        print("\n" + "="*60)
-        print("Testing Cookie-Based Personal Greeting (Auto)")
-        print("="*60)
-        # Test without cookie
-        self.make_request('GET', '/cookie-greet')
-        
-        # Test with cookie
-        cookies = {"username": "JohnDoe"}
-        self.make_request('GET', '/cookie-greet', cookies=cookies)
-        
-        print("\n" + "="*60)
-        print("ALL TESTS COMPLETED!")
-        print("="*60)
 
 
 def print_banner():
     """Print application banner."""
     print("="*60)
-    print("FastAPI Lab 2 - Command Line Driver")
-    print("Interactive Route Service Tester")
+    print("FastAPI Lab 7 - Command Line Driver")
+    print("Interactive Route Service Tester & Database Query Executor")
     print("="*60)
 
 
@@ -404,7 +405,7 @@ def print_menu():
     print("\n" + "="*60)
     print("AVAILABLE ROUTE SERVICES:")
     print("="*60)
-    print("1.  Root Endpoint                 (/)")
+    print("1.  Root Endpoint                (/)")
     print("2.  Greet Service                (/greet)")
     print("3.  Cube Calculator              (/cube/{number})")
     print("4.  Addition Service             (/add)")
@@ -417,9 +418,46 @@ def print_menu():
     print("11. Protected Data               (/protected-data)")
     print("12. Cookie Personal Greeting     (/cookie-greet)")
     print("="*60)
-    print("13. Run All Tests (Auto)")
-    print("14. Check Server Status")
+    print("13. Database Operations")
+    print("14. Run All Tests (Auto)")
+    print("15. Check Server Status")
     print("0.  Exit")
+    print("="*60)
+
+
+def print_db_menu():
+    """Print the database operations submenu."""
+    from database_utils import list_all_queries
+    queries = list_all_queries()
+    
+    # Categorize queries
+    simple = [(k, v) for k, v in queries.items() if k.startswith('simple_')]
+    join = [(k, v) for k, v in queries.items() if k.startswith('join_')]
+    group = [(k, v) for k, v in queries.items() if k.startswith('group_')]
+    
+    print("\n" + "="*60)
+    print("DATABASE OPERATIONS:")
+    print("="*60)
+    
+    # Simple queries (1-3)
+    print("Simple Queries:")
+    for i, (k, v) in enumerate(simple, 1):
+        print(f"{i}. {v}")
+    
+    # Join queries (4-8)
+    print("\nJoin Queries:")
+    for i, (k, v) in enumerate(join, len(simple) + 1):
+        print(f"{i}. {v}")
+    
+    # Group by queries (9-13)
+    print("\nGroup By Queries:")
+    for i, (k, v) in enumerate(group, len(simple) + len(join) + 1):
+        print(f"{i}. {v}")
+    
+    # Custom query (14)
+    custom_option = len(simple) + len(join) + len(group) + 1
+    print(f"\n{custom_option}. Execute Custom SQL Query")
+    print(f"0. Back to Main Menu")
     print("="*60)
 
 
@@ -439,9 +477,7 @@ def main():
     print(f"\nChecking server status at {server_url}...")
     if not driver.check_server_status():
         print(f"ERROR: Server is not responding at {server_url}")
-        print("Make sure the FastAPI server is running:")
-        print("   cd Lab 2")
-        print("   uvicorn main:app --port 8080 --reload")
+        print("Make sure the FastAPI server is running in a Docker container.")
         
         continue_anyway = input("\nContinue anyway? (y/N): ").strip().lower()
         if continue_anyway != 'y':
@@ -459,12 +495,14 @@ def main():
         print_menu()
         
         try:
-            choice = input("\nSelect an option (0-14): ").strip()
+            choice = input("\nSelect an option (0-15): ").strip()
             
             if choice == '0':
+                if driver.db_connection:
+                    close_connection(driver.db_connection)
                 clear_terminal()
                 print("="*60)
-                print("Thank you for using FastAPI Lab 2 Driver!")
+                print("Thank you for using FastAPI Lab 7 Driver!")
                 print("Goodbye!")
                 print("="*60)
                 break
@@ -493,8 +531,57 @@ def main():
             elif choice == '12':
                 driver.test_cookie_greet()
             elif choice == '13':
-                driver.run_all_tests()
+                # Database Operations Submenu
+                while True:
+                    clear_terminal()
+                    print_banner()
+                    print_db_menu()
+                    db_choice = input("\nSelect a database option (0 to return): ").strip()
+                    
+                    from database_utils import list_all_queries, get_query_by_key
+                    queries = list_all_queries()
+                    simple = [k for k in queries if k.startswith('simple_')]
+                    join = [k for k in queries if k.startswith('join_')]
+                    group = [k for k in queries if k.startswith('group_')]
+                    
+                    if db_choice == '0':
+                        break
+                    elif db_choice.isdigit():
+                        choice_num = int(db_choice)
+                        
+                        # Simple queries (1-3)
+                        if 1 <= choice_num <= len(simple):
+                            driver.execute_predefined_query(simple[choice_num - 1])
+                        
+                        # Join queries (4-8)
+                        elif len(simple) + 1 <= choice_num <= len(simple) + len(join):
+                            join_index = choice_num - len(simple) - 1
+                            driver.execute_predefined_query(join[join_index])
+                        
+                        # Group by queries (9-13)
+                        elif len(simple) + len(join) + 1 <= choice_num <= len(simple) + len(join) + len(group):
+                            group_index = choice_num - len(simple) - len(join) - 1
+                            driver.execute_predefined_query(group[group_index])
+                        
+                        # Custom query (14)
+                        elif choice_num == len(simple) + len(join) + len(group) + 1:
+                            driver.execute_custom_query()
+                        
+                        else:
+                            print("Invalid database option.")
+                    else:
+                        print("Invalid database option.")
+                    
+                    input("\nPress Enter to continue...")
             elif choice == '14':
+                # Run all tests (API + DB)
+                import subprocess
+                clear_terminal()
+                print("="*60)
+                print("RUNNING ALL TESTS (API + DATABASE)")
+                print("="*60)
+                subprocess.run(["python", "test.py"])
+            elif choice == '15':
                 clear_terminal()
                 print("="*60)
                 print("Server Status Check")
@@ -507,12 +594,14 @@ def main():
             else:
                 clear_terminal()
                 print("="*60)
-                print("ERROR: Invalid choice. Please select 0-14.")
+                print("ERROR: Invalid choice. Please select 0-15.")
                 print("="*60)
             
             input("\nPress Enter to continue...")
             
         except KeyboardInterrupt:
+            if driver.db_connection:
+                close_connection(driver.db_connection)
             clear_terminal()
             print("="*60)
             print("Interrupted by user.")

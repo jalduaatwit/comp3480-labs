@@ -22,6 +22,9 @@ SQL database operations with 13 queries covering simple queries, inner joins, an
 ### [Lab 6 - Containerized MySQL Database](Lab%206/README.md)
 Containerized MySQL database using Docker Compose with 13 SQL queries, demonstrating database deployment and management in a containerized environment.
 
+### [Lab 7 - Integrated FastAPI and Database CLI](Lab%207/README.md)
+Unified Python application combining FastAPI service testing with MySQL database operations through an integrated command-line interface, featuring 13 predefined queries and comprehensive unit testing.
+
 ## Getting Started
 
 Each lab folder contains its own README with detailed instructions on how to run and test the code.
@@ -46,3 +49,8 @@ Each lab folder contains its own README with detailed instructions on how to run
 ### For Lab 6 (Containerized SQL/Database):
 - Docker and Docker Compose
 - DBeaver Community Edition
+
+### For Lab 7 (Integrated FastAPI and Database):
+- Python 3.8+
+- Docker and Docker Compose
+- pip package manager

@@ -3,14 +3,21 @@ version: '3.8'
 services:
   mysql:
     image: mysql:9.3
-    container_name: mysql-db
+    container_name: mysql-db-lab7
     restart: always
-    environment: 
+    environment:
       MYSQL_ROOT_PASSWORD: secret_password
     ports:
       - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
+  fastapi:
+    image: fastapi:latest
+    container_name: fastapi-server
+    restart: always
+    ports:
+      - "8080:8080"
+
 volumes:
-  mysql_data:
+  mysql_data: 
