@@ -2,8 +2,7 @@
 * This script creates the database named my_guitar_shop 
 *********************************************************/
 
-DROP DATABASE IF EXISTS my_guitar_shop;
-CREATE DATABASE my_guitar_shop;
+CREATE DATABASE IF NOT EXISTS my_guitar_shop;
 USE my_guitar_shop;
 
 -- create the tables for the database
