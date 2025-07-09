@@ -26,13 +26,23 @@ def ensure_database_exists(host: str = "localhost", port: int = 3307,
             connection_timeout=10,
             autocommit=True
         )
-        with open(database_file, 'r') as f:
-            sql_script = f.read()
-        sql_commands = sql_script.split(';')
             
         mycursor = mydb.cursor()
-        for command in sql_commands:
-            mycursor.execute(command)
+        
+        mycursor.execute("SHOW DATABASES LIKE 'my_guitar_shop';")
+        result = mycursor.fetchone()
+        
+        if result:
+            print("Database 'my_guitar_shop' already exists. Skipping creation.")
+        else:
+            print("Database not found. Creating and initializing from SQL script...")
+            with open(database_file, 'r') as f:
+                sql_script = f.read()
+            sql_commands = [cmd.strip() for cmd in sql_script.split(';') if cmd.strip()]
+            for command in sql_commands:
+                mycursor.execute(command)
+            print("Database created and initialized.")
+        
         mycursor.close()
         mydb.close()
     except mysql.connector.Error as err:
