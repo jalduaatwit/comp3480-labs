@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:9.3
+    container_name: mysql-db-lab8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: secret_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  fastapi:
+    image: fastapi:latest
+    container_name: fastapi-server
+    restart: always
+    ports:
+      - "8080:8080"
+
+  minio:
+    image: minio/minio:latest
+    container_name: minio-lab8
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+
+  redis:
+    image: redis:latest
+    container_name: redis-lab8
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+  postfix:
+    image: boky/postfix:latest
+    container_name: postfix-lab8
+    restart: always
+    ports:
+      - "1587:587"  # SMTP port
+    environment:
+      ALLOWED_SENDER_DOMAINS: wit.edu
+      HOSTNAME: mail.lab8.local
+      # RELAYHOST: "[smtp.gmail.com]:587"
+    volumes:
+      - postfix_data:/var/spool/postfix
+
+volumes:
+  mysql_data:
+  minio_data:
+  redis_data:
+  postfix_data: 

@@ -25,6 +25,9 @@ Containerized MySQL database using Docker Compose with 13 SQL queries, demonstra
 ### [Lab 7 - Integrated FastAPI and Database CLI](Lab%207/README.md)
 Unified Python application combining FastAPI service testing with MySQL database operations through an integrated command-line interface, featuring 13 predefined queries and comprehensive unit testing.
 
+### [Lab 8 - Multi-Service System with Docker Compose](Lab%208/README.md)
+Comprehensive multi-service system using Docker Compose, integrating FastAPI, MySQL, Redis cache, MinIO object storage, and Postfix email server. Features shared file storage, caching, email capabilities, and automated testing across all services.
+
 ## Getting Started
 
 Each lab folder contains its own README with detailed instructions on how to run and test the code.
@@ -51,6 +54,11 @@ Each lab folder contains its own README with detailed instructions on how to run
 - DBeaver Community Edition
 
 ### For Lab 7 (Integrated FastAPI and Database):
+- Python 3.8+
+- Docker and Docker Compose
+- pip package manager
+
+### For Lab 8 (Multi-Service System):
 - Python 3.8+
 - Docker and Docker Compose
 - pip package manager
