@@ -88,10 +88,9 @@ python cli_driver.py
 - **2. Redis Cache Service** - Test shared memory operations
 - **3. MinIO File Service** - Test object storage operations  
 - **4. Postfix Email Service** - Test email sending capabilities
-- **5. View Postfix Logs** - Show email delivery status and spam filter behavior
-- **6. Database Operations** - Execute database queries
-- **7. Run All Tests** - Automated testing of all services
-- **8. Check All Services Status** - Health check for all services
+- **5. Database Operations** - Execute database queries
+- **6. Run All Tests** - Automated testing of all services
+- **7. Check All Services Status** - Health check for all services
 
 ### Service Demonstrations
 
@@ -112,7 +111,6 @@ python cli_driver.py
 - Create properly formatted email messages
 - Send REAL emails to jaldua@wit.edu (configurable)
 - Demonstrate spam filter behavior (expected rejection)
-- Show real-time delivery logs and analysis
 - Handle connection errors gracefully
 
 ## Running Tests

@@ -518,7 +518,7 @@ class FastAPIDriver:
         print("="*60)
         
         print("   IMPORTANT: This will attempt to send a REAL email!")
-        print("   The email will likely be rejected by wit.edu as spam.")
+        print("   The email will likely be rejected by most recipient servers as spam.")
         print("   This demonstrates real email sending behavior.")
         print("="*60)
         
@@ -581,118 +581,17 @@ Lab 8 CLI Driver
             
             server.quit()
             
-            # Show Postfix logs to demonstrate delivery attempts
-            print("\n" + "="*60)
-            print("POSTFIX DELIVERY LOGS:")
-            print("="*60)
-            print("Checking Postfix logs for delivery attempts...")
-            
-            try:
-                import subprocess
-                import time
-                
-                # Get recent Postfix logs
-                result = subprocess.run(
-                    ["docker-compose", "logs", "--tail=10", "postfix"], 
-                    capture_output=True, text=True, cwd="."
-                )
-                
-                if result.stdout:
-                    print("\nRecent Postfix Logs:")
-                    print("-" * 40)
-                    for line in result.stdout.strip().split('\n'):
-                        if 'postfix-lab8' in line:
-                            # Extract the log message
-                            log_parts = line.split('|')
-                            if len(log_parts) > 1:
-                                log_message = log_parts[1].strip()
-                                print(f"  {log_message}")
-                    
-                    print("-" * 40)
-                    print("ANALYSIS:")
-                    print("  - Email was accepted by local Postfix server")
-                    print("  - Postfix attempted to deliver to wit.edu mail servers")
-                    print("  - Connection timeouts indicate spam filter rejection")
-                    print("  - No error returned (silent rejection)")
-                    print("  - This demonstrates real spam filter behavior")
-                else:
-                    print("No recent logs found. Check if Postfix container is running.")
-                    
-            except Exception as log_error:
-                print(f"Could not retrieve logs: {log_error}")
-            
             print("\n" + "="*60)
             print("Email Test Summary:")
             print("   SUCCESS: SMTP connection established")
             print("   SUCCESS: Email message created and sent to Postfix")
             print("   SUCCESS: Real email delivery attempted")
             print("   SUCCESS: Expected failure demonstrates spam filter behavior")
-            print("   SUCCESS: Logs show connection timeouts (spam filter rejection)")
             print("="*60)
             
         except Exception as e:
             print(f"ERROR: Error connecting to SMTP server: {e}")
             print("Make sure Postfix container is running on localhost:1587")
-    
-    def view_postfix_logs(self):
-        """View Postfix logs to show email delivery status."""
-        clear_terminal()
-        print("="*60)
-        print("Postfix Email Delivery Logs")
-        print("="*60)
-        
-        try:
-            import subprocess
-            
-            print("Retrieving recent Postfix logs...")
-            print("="*60)
-            
-            # Get recent Postfix logs
-            result = subprocess.run(
-                ["docker-compose", "logs", "--tail=20", "postfix"], 
-                capture_output=True, text=True, cwd="."
-            )
-            
-            if result.stdout:
-                print("Recent Postfix Logs:")
-                print("-" * 60)
-                
-                # Parse and display logs in a readable format
-                for line in result.stdout.strip().split('\n'):
-                    if 'postfix-lab8' in line:
-                        # Extract timestamp and log message
-                        log_parts = line.split('|')
-                        if len(log_parts) > 1:
-                            timestamp = log_parts[0].strip()
-                            log_message = log_parts[1].strip()
-                            
-                            # Highlight important messages
-                            if 'connect to wit-edu' in log_message:
-                                print(f"  [DELIVERY ATTEMPT] {log_message}")
-                            elif 'Connection timed out' in log_message:
-                                print(f"  [TIMEOUT] {log_message}")
-                            elif 'status=deferred' in log_message:
-                                print(f"  [DEFERRED] {log_message}")
-                            elif 'queued as' in log_message:
-                                print(f"  [QUEUED] {log_message}")
-                            else:
-                                print(f"  {log_message}")
-                
-                print("-" * 60)
-                print("LOG ANALYSIS:")
-                print("  • 'QUEUED' = Email accepted by local Postfix")
-                print("  • 'DELIVERY ATTEMPT' = Postfix trying to reach wit.edu")
-                print("  • 'TIMEOUT' = Connection rejected (spam filter)")
-                print("  • 'DEFERRED' = Email will retry later")
-                print("  • No error messages = Silent rejection (typical spam behavior)")
-                print("="*60)
-                
-            else:
-                print("No logs found. Check if Postfix container is running.")
-                
-        except Exception as e:
-            print(f"ERROR: Could not retrieve logs: {e}")
-            print("Make sure Docker Compose is running and Postfix container is active.")
 
 
 def print_banner():
@@ -714,11 +613,10 @@ def print_menu():
     print("2.  Redis Cache Service (Shared Memory)")
     print("3.  MinIO File Service (Object Storage)")
     print("4.  Postfix Email Service (SMTP Server)")
-    print("5.  View Postfix Logs (Delivery Status)")
     print("\nSYSTEM OPERATIONS:")
-    print("6.  Database Operations")
-    print("7.  Run All Tests (Auto)")
-    print("8.  Check All Services Status")
+    print("5.  Database Operations")
+    print("6.  Run All Tests (Auto)")
+    print("7.  Check All Services Status")
     print("0.  Exit")
     print("="*60)
 
@@ -814,7 +712,7 @@ def main():
         print_menu()
         
         try:
-            choice = input("\nSelect an option (0-8): ").strip()
+            choice = input("\nSelect an option (0-7): ").strip()
             
             if choice == '0':
                 if driver.db_connection:
@@ -874,9 +772,6 @@ def main():
                 # Postfix Service
                 driver.test_postfix_service()
             elif choice == '5':
-                # View Postfix Logs
-                driver.view_postfix_logs()
-            elif choice == '6':
                 # Database Operations Submenu
                 while True:
                     clear_terminal()
@@ -919,7 +814,7 @@ def main():
                         print("Invalid database option.")
                     
                     input("\nPress Enter to continue...")
-            elif choice == '7':
+            elif choice == '6':
                 # Run all tests (API + DB + New Services)
                 import subprocess
                 clear_terminal()
@@ -927,7 +822,7 @@ def main():
                 print("RUNNING ALL TESTS (API + DATABASE + NEW SERVICES)")
                 print("="*60)
                 subprocess.run(["python", "test.py"])
-            elif choice == '8':
+            elif choice == '7':
                 # Check all services status
                 clear_terminal()
                 print("="*60)
@@ -982,7 +877,7 @@ def main():
             else:
                 clear_terminal()
                 print("="*60)
-                print("ERROR: Invalid choice. Please select 0-8.")
+                print("ERROR: Invalid choice. Please select 0-7.")
                 print("="*60)
             
             input("\nPress Enter to continue...")
