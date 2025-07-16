@@ -4,6 +4,5 @@ pydantic
 typing
 mysql-connector-python
 redis
-boto3
 minio
 smtplib
