@@ -213,6 +213,7 @@ docker-compose up -d
 ## Development Notes
 
 - **Email sending**: Configured for real sending, will likely be rejected by spam filters (expected behavior)
+- **Successful Email Delivery on Local Network**: While most external email servers will reject messages sent from a development Postfix instance, we were able to successfully deliver emails by configuring the recipient address to use `mail.local` and running the system on the local WIT network. The WIT campus network recognizes and accepts mail sent to `mail.local` addresses, allowing internal delivery to WIT email accounts. This setup bypasses typical spam filter rejections encountered when sending to external domains, making it possible to test real email delivery in a controlled environment.
 - Services are configured for development, not production use
 - All credentials are default/test values
 - Persistent volumes maintain data between container restarts
